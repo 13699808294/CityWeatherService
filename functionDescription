@@ -1,0 +1,39 @@
+服务名称:   CityWeatherService
+使用端口:   8017
+功能说明:
+    1:通过数据库所有城市,获取城市的天气
+        注:城市信息中必须包含city_id,否则无法获取天气信息,
+    2:城市天气三小时更新,每次更新把城市信息通过mqtt发送出去.
+        1:mqtt主题:/aaiot/{城市guid}/send/controlbus/event/websocket/city_weather/0
+        2:内容:info = {
+                    'type':'city_weather',
+                    'guid':'',          #城市guid
+                    'name':'',          #城市名称
+                    'tem':',            #当前温度
+                    'win':',            #风向
+                    'win_speed': '',    #风速等级
+                    'win_meter': '',    #风速
+                    'humidity': '',     #湿度
+                    'visibility': '',   #能见度
+                    'air': '',          #空气质量
+                    'air_pm25': '',     #PM2.5
+                    'air_level': '',    #空气质量等级
+                    'pressure': '',     #气压hPa
+                    'wea': '',          #天气情况
+                    'wea_img': '',      #天气对应图标
+                }
+    3:前端主动获取城市天气
+        1:通过websocket,
+            发送{
+                'type': weather_info,
+                'city_guid': '',    #城市guid
+                'connection_token': #连接token
+            }
+        2:websocket通过mqtt转发:
+            mqtt主题:'/aaiot/{城市guid}/receive/controlbus/event/websocket/city_weather/0'
+            信息:{
+                'type': weather_info,
+                'city_guid': '',    #城市guid
+                'connection_token': #连接token
+            }
+        3:返回天气信息会增加一个connection_token
